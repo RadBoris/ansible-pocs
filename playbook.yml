@@ -1,6 +1,9 @@
 ---
 - hosts: all
 
-  tasks:
-  - name: pwd
-    command: pwd
+  pre_tasks:
+    - name: pwd
+      command: pwd
+
+  roles:
+    - { role: admin_user, when: "'development' not in group_names" }
