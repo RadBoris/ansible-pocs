@@ -1,0 +1,2 @@
+[staging]
+178.62.106.150 ansible_ssh_user='root'
