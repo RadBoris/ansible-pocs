@@ -2,13 +2,29 @@
 
 Note: this file would normally be parsed as an inventory file! However, we have ignored .md files in ansible.cfg
 
+## Why is the _development inventory file a symlink?
+
+When you provision a vagrant machine with ansible, an inventory file is automatically generated at .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory. This is the inventory file that is used by `vagrant provision` and `vagrant ssh` to connect to the box.
+
+When we come to add more environments like staging and production, it would be useful to have the details in this file replicated in our hosts directory. Then we can tell ansible.cfg to look in this one directory for connection information to all our hosts. In the interest of keeping things DRY, rather than duplicating this file, we add a symlink to it's original location. This way, it will stay updated if the details of the box ever change, or if we add multiple boxes.
+
+By default, the vagrant_ansible_inventory doesn't add the hosts to any groups. However, you can add each box to as many groups you wish within the provisioner configuration in the Vagrantfile, like this:
+
+```
+ansible.groups = {
+  'development' => ['default']
+}
+```
+
+We can then reference the 'development' group in our playbooks.
+
 ## Why are some inventory file names prefixed with underscores?
 
 This is a workaround for a problem. The contents of the hosts directory are processed in alphabetical order. This means that if you had inventory files 'a' and 'b', and in 'a' you tried to reference a group name that is defined in 'b', you would get an error like: `"Section [mysection:children] includes undefined group: mygroup"`
 
 To work around this, we make sure all groups are defined first (hence adding the underscore to make them first alphabetically).
 
-# What is the insecure_ssh inventory file?
+## What is the insecure_ssh inventory file?
 
 (The insecure_ssh file is based on a solution found here: http://stackoverflow.com/a/35564773/3293805)
 
