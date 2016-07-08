@@ -2,10 +2,6 @@
 - hosts: all
   gather_facts: no
 
-  # pre_tasks:
-  #   - name: pwd
-  #     command: pwd
-
   roles:
     - { role: admin_user, when: "'development' not in group_names" }
     - { role: remote_user_test, tags: ['remote_user_test'] }
