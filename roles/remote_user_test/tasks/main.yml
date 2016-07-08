@@ -13,3 +13,8 @@
 - name: print username and home dir
   debug:
     msg: "user: {{ user_name.stdout }} --- home: {{ user_home.stdout }}"
+
+- name: test sudo pwd
+  remote_user: "{{ my_remote_user }}"
+  become: yes
+  command: pwd
