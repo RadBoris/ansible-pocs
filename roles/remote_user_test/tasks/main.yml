@@ -2,12 +2,10 @@
 
 - name: get current username
   command: id -u -n
-  remote_user: "{{ my_remote_user }}"
   register: user_name
 
 - name: print home directory
   command: echo $HOME
-  remote_user: "{{ my_remote_user }}"
   register: user_home
 
 - name: print username and home dir
@@ -15,6 +13,5 @@
     msg: "user: {{ user_name.stdout }} --- home: {{ user_home.stdout }}"
 
 - name: test sudo pwd
-  remote_user: "{{ my_remote_user }}"
   become: yes
   command: pwd
