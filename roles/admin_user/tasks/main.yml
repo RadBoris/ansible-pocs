@@ -3,3 +3,22 @@
 - name: create admin group
   group:
     name: admin
+
+- name: Allow admin group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%admin'
+    line: '%admin ALL=(ALL) NOPASSWD: ALL'
+
+- name: create admin user in admin group
+  user:
+    name: admin
+    groups: admin
+    append: yes
+    shell: /bin/bash
+
+- name: add ssh public key for admin user
+  authorized_key:
+    user: admin
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
