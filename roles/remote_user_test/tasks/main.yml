@@ -1,0 +1,10 @@
+---
+
+- name: get current username
+  command: id -u -n
+  remote_user: "{{ my_remote_user }}"
+  register: user_name
+
+- name: print current username
+  debug:
+    var: user_name.stdout

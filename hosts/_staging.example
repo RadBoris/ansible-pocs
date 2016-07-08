@@ -1,0 +1,5 @@
+# rename this file to _staging, uncomment the lines below,
+# and add your own staging hostname
+
+#[staging]
+#your_staging_hostname_or_ip
