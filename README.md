@@ -10,5 +10,6 @@ See hosts/README.md for notes specific to inventory files.
 
 ## Playbooks
 
-* *vagrant-default-playbook.yml* - this is a near-empty playbook that vagrant runs by default on `vagrant up`. We don't really want a playbook to be run automatically (we want to choose from one of the below playbooks), however, using the vagrant ansible provisioner requires that you choose a playbook, so we just give it this dummy playbook to keep it happy.
+### vagrant.yml
 
+This is a near-empty playbook that vagrant runs by default on `vagrant up`. We don't really want a playbook to be run automatically (we want to choose from one of the below playbooks), however, using the vagrant ansible provisioner requires that you choose a playbook, so we just give it this dummy playbook to keep it happy. You may ask "then why use the ansible provisioner at all?" - because we want it to auto-generate an inventory file for us.
