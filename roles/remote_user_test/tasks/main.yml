@@ -1,0 +1,17 @@
+---
+
+- name: get current username
+  command: id -u -n
+  register: user_name
+
+- name: print home directory
+  command: echo $HOME
+  register: user_home
+
+- name: print username and home dir
+  debug:
+    msg: "user: {{ user_name.stdout }} --- home: {{ user_home.stdout }}"
+
+- name: test sudo pwd
+  become: yes
+  command: pwd

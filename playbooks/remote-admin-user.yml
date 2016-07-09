@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: no
+  remote_user: "{{ my_remote_user }}"
+
+  roles:
+    - { role: admin_user, when: "'development' not in group_names" }
+    - { role: remote_user_test, tags: ['remote_user_test'] }
