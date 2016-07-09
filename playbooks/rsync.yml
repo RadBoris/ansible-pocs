@@ -1,0 +1,12 @@
+---
+- hosts: ansible-pocs-1
+  gather_facts: no
+  remote_user: "{{ my_remote_user }}"
+
+  tasks:
+
+    - name: sync home folders
+      synchronize:
+        src: /home/vagrant
+        dest: /home/vagrant
+      delegate_to: ansible-pocs-2
