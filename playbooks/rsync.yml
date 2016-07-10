@@ -1,12 +1,23 @@
 ---
 - hosts: ansible-pocs-1
-  gather_facts: no
   remote_user: "{{ my_remote_user }}"
+  become: no
+  become_method: sudo
+  become_user: root
 
   tasks:
 
-    - name: sync home folders
+  # try writing a task with hosts defined at task level?
+
+    - name: sync local folder to hosts folder
       synchronize:
-        src: /home/vagrant
-        dest: /home/vagrant
-      delegate_to: ansible-pocs-2
+        src: /Users/patrick/Documents/syncthis
+        dest: /home/admin
+
+    # - name: sync folder
+    #   become: yes
+    #   synchronize:
+    #     src: /home/admin/syncthis
+    #     dest: /home/admin/syncthis
+    #     mode: push 
+    #   delegate_to: ansible-pocs-2
