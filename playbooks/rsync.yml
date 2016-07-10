@@ -9,15 +9,15 @@
 
   # try writing a task with hosts defined at task level?
 
-    - name: sync local folder to hosts folder
+    - name: sync local folder to remote folder
       synchronize:
         src: /Users/patrick/Documents/syncthis
         dest: /home/admin
 
-    # - name: sync folder
+    # - name: sync remote folder to remote folder
     #   become: yes
     #   synchronize:
     #     src: /home/admin/syncthis
-    #     dest: /home/admin/syncthis
+    #     dest: /home/admin
     #     mode: push 
     #   delegate_to: ansible-pocs-2
