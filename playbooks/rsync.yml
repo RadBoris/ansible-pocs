@@ -14,10 +14,15 @@
         src: /Users/patrick/Documents/syncthis
         dest: /home/admin
 
-    # - name: sync remote folder to remote folder
-    #   become: yes
-    #   synchronize:
-    #     src: /home/admin/syncthis
-    #     dest: /home/admin
-    #     mode: push 
-    #   delegate_to: ansible-pocs-2
+    - name: sync remote folder to remote folder
+      synchronize:
+        src: /home/admin/syncthis
+        dest: /home/admin
+        # archive: yes ## default is yes
+        # recursive: yes ## default is value of 'archive'
+        ## hence, it is not necessary to explicitly set recursive: yes
+        # mode: push ## default is push
+      delegate_to: ansible-pocs-2
+
+    # - name: use rsync manually
+    #   command: "rsync admin@139.59.175.90:~/syncthis ~/"
