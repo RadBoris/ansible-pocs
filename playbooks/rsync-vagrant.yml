@@ -1,0 +1,32 @@
+---
+
+- name: two step rsync - step 1
+  hosts: ansible-pocs-1
+  remote_user: "{{ my_remote_user }}"
+  become: no
+  become_method: sudo
+  become_user: root
+
+  tasks:
+
+    - name: sync remote box to local dir
+      synchronize:
+        src: /home/admin/syncthis
+        dest: ./.rsync
+        mode: pull
+      become: yes
+
+- name: two step rsync - step 2
+  hosts: primary
+  remote_user: "{{ my_remote_user }}"
+  become: no
+  become_method: sudo
+  become_user: root
+
+  tasks:
+
+    - name: sync local dir to vagrant box
+      synchronize:
+        src: ./.rsync/syncthis
+        dest: /home/vagrant
+        mode: push

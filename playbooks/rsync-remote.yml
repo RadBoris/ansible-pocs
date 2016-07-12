@@ -1,5 +1,6 @@
 ---
-- hosts: ansible-pocs-1
+- name: rsync with remote machines
+  hosts: ansible-pocs-1
   remote_user: "{{ my_remote_user }}"
   become: no
   become_method: sudo
@@ -33,4 +34,4 @@
       synchronize:
         src: /home/admin/syncthis
         dest: /home/admin
-      delegate_to: "{{ groups['staging'][1] }}"
+      delegate_to: "{{ groups['staging'][1] }}"  
