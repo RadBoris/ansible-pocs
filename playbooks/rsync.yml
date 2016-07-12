@@ -26,6 +26,9 @@
         # mode: push ## default is push
       delegate_to: ansible-pocs-2
 
+    ## This task does the same as the previous task, except we are
+    ## supplying the delegate host as a variable - in this case, the
+    ## second machine listed in the staging group (index 1).
     - name: sync remote folders using var as delegate
       synchronize:
         src: /home/admin/syncthis
