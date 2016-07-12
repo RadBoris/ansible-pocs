@@ -38,10 +38,11 @@ Disabling string host key checking is particularly useful for the development gr
 
 In fact, nothing nasty is happening, we've just rebuilt our machine. By disabling strict host key checking, we allow ansible to continue to connect to the machine.
 
-Disabling string host key checking can also be useful if you test your playbooks against a remote host, and you occasionally rebuild that host (e.g. on AWS or Digital Ocean). For this reason, this project also disables strict host key checking for the 'staging' group.
+Disabling string host key checking can also be useful if you test your playbooks against a remote host, and you occasionally rebuild that host (e.g. on AWS or Digital Ocean). ~~For this reason, this project also disables strict host key checking for the 'staging' group.~~ (no longer - see notes below)
 
 To disable strict host key checking for a group, add the group name under `[insecure_ssh:children]` in the 'insecure_ssh' file. This should not be done on production, or indeed any server you plan to deploy sensitive information to (which might include staging). Use at your own risk.
 
 Note:
 * Running `vagrant provision` after rebuilding your vagrant machine does not throw up the above warning, so disabling strict host key checking is only necessary if you're trying to run ansible directly, e.g. via `ansible-playbook`. Likewise, `vagrant ssh` does not throw up the warning.
 * Disabling strict host key checking in ansible does not have an effect when SSH'ing into the machine using the ssh command - you will see the above warning. A workaround in this case is to remove the old 'fingerprint' from your ~/.ssh/known_hosts file. Look for the IP address of the machine, and remove that line from the file.
+* There is a limitation to using group vars in inventory files, e.g. `[insecure_ssh:vars]` - if you set a variable on this group, and you've set the same variable on another group, and a particular host is a member of both groups - the variable will be overwritten. As such, staging has been removed from the insecure_ssh group, so that the variable can be set with a different value via another group.

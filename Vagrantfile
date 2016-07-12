@@ -15,8 +15,6 @@ Vagrant.configure(2) do |config|
     config.vbguest.no_install = true
   end
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/trusty64"
 
   # Disable automatic box update checking. If you disable this, then
@@ -63,11 +61,25 @@ Vagrant.configure(2) do |config|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
   # end
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbooks/vagrant.yml"
-    ansible.groups = {
-      'development' => ['default']
-    }
+  config.vm.define "primary" do |primary|
+
+    primary.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/vagrant.yml"
+    end
+
+  end
+
+  config.vm.define "secondary" do |secondary|
+
+    secondary.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/vagrant.yml"
+      # ansible.groups must be defined in the last vm, as it will overwrite
+      # the settings listed in all previous vms.
+      ansible.groups = {
+        'development' => ['primary', 'secondary']
+      }
+    end
+
   end
 
 end
