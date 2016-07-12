@@ -14,6 +14,7 @@
         src: /home/admin/syncthis
         dest: ./.rsync
         mode: pull
+        delete: yes # deletes files no longer present
       become: yes
 
 - name: two step rsync - step 2
@@ -30,3 +31,4 @@
         src: ./.rsync/syncthis
         dest: /home/vagrant
         mode: push
+        delete: yes # deletes files no longer present
