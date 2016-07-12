@@ -1,5 +1,15 @@
-# rename this file to _staging, uncomment the lines below,
-# and add your own staging hostname
+## rename this file to _staging, uncomment the lines below,
+## and add your own staging hosts
 
-#[staging]
-#your_staging_hostname_or_ip
+# ansible-pocs-1 ansible_ssh_host=your_host_ip_1
+# ansible-pocs-2 ansible_ssh_host=your_host_ip_2
+
+# [staging]
+# ansible-pocs-1
+# ansible-pocs-2
+
+## ForwardAgent is necessary when running a task that connects
+## a remote host to another remote host/server, e.g. running
+## rsync, or pulling from Github 
+# [staging:vars]
+# ansible_ssh_extra_args="-o ForwardAgent=yes" 

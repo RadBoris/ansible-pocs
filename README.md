@@ -23,3 +23,13 @@ Most vagrant boxes come with a default 'vagrant' user with passwordless sudo. On
 In this playbook, the very first role is to add the admin user - this is done while logging in as root (set as `remote_user` at task level in the admin_user role, to override the playbook level setting described below). This only needs to be done on remote machines though, so the 'development group' is excluded from this role.
 
 Any roles or tasks beyond this should use the standard user. This is set at playbook level as `remote_user`. This in turn is set via a group_var called `my_remote_user` - because the user will be different depending on the environment ('vagrant' on the development box, 'admin' elsewhere).
+
+### rsync.yml
+
+A playbook to sync a folder on one remote host, to a folder on another remote host.
+
+Note: Add your own remote hosts to the inventory first (see hosts/_staging.example). Also run remote-admin-user.yml on both servers you wish to sync, before running this playbook. This adds the admin user, and your local public key, to the servers.
+
+Currently tested on two remote hosts (not vagrant).
+
+View the comments in the playbook for more info.

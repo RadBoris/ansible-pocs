@@ -7,13 +7,15 @@
 
   tasks:
 
-  # try writing a task with hosts defined at task level?
-
     - name: sync local folder to remote folder
       synchronize:
         src: /Users/patrick/Documents/syncthis
         dest: /home/admin
 
+    ## This playbook is run against host ansible-pocs-1, but this task is
+    ## delegated to ansible-pocs-2. In practice this means that the task
+    ## first logs into ansible-pocs-2 and then runs rsync from there back
+    ## to ansible-pocs-1.
     - name: sync remote folder to remote folder
       synchronize:
         src: /home/admin/syncthis
@@ -24,5 +26,3 @@
         # mode: push ## default is push
       delegate_to: ansible-pocs-2
 
-    # - name: use rsync manually
-    #   command: "rsync admin@139.59.175.90:~/syncthis ~/"
