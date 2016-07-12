@@ -26,3 +26,8 @@
         # mode: push ## default is push
       delegate_to: ansible-pocs-2
 
+    - name: sync remote folders using var as delegate
+      synchronize:
+        src: /home/admin/syncthis
+        dest: /home/admin
+      delegate_to: "{{ groups['staging'][1] }}"
