@@ -1,0 +1,50 @@
+---
+
+- name: rsync with local vagrant machines
+  hosts: primary
+  remote_user: "{{ my_remote_user }}"
+  become: no
+  become_method: sudo
+  become_user: root
+
+  tasks:
+
+    - name: sync local folder to vagrant box folder
+      synchronize:
+        src: /Users/patrick/Documents/syncthis
+        dest: /home/vagrant
+
+    ## This task fails - the error message complains of a missing
+    ## public key file, although it is clearly present locally -
+    ## but probably not on the 'secondary' machine. Why is it
+    ## looking for a .vagrant folder on the 'secondary' machine?
+    ## I suspect this is a problem with the fact that both vagrant
+    ## machines are on 127.0.0.1 (albeit different ports) and
+    ## AgentForwarding is getting confused, and failing.
+    # - name: sync vbox1 folder to vbox2 folder
+    #   synchronize:
+    #     src: /home/vagrant/syncthis
+    #     dest: /home/vagrant
+    #   delegate_to: secondary
+
+- name: rsync vagrant box to remote box
+  hosts: ansible-pocs-1
+  remote_user: "{{ my_remote_user }}"
+  become: no
+  become_method: sudo
+  become_user: root
+
+  tasks:
+
+    ## rsync in this task will need to be run on the vagrant box
+    ## (because the remote box will not be able to connect to the
+    ## vagrant box, as it is on our private network). Thus, the
+    ## delegate_to setting should be the vagrant box, the mode
+    ## should be 'pull' and the play host should be the remote box.
+    ## THIS TASK FAILS for the same reasons as the previous play.
+    # - name: sync vagrant box to remote box
+    #   synchronize:
+    #     src: /home/admin/syncthis
+    #     dest: /home/vagrant
+    #     mode: pull
+    #   delegate_to: primary
