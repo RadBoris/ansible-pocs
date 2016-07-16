@@ -33,3 +33,7 @@ Note: Add your own remote hosts to the inventory first (see hosts/_staging.examp
 Currently tested on two remote hosts (not vagrant).
 
 View the comments in the playbook for more info.
+
+## TODO
+
+* Add a POC for ansible-pull
