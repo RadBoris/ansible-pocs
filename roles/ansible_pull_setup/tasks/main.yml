@@ -1,0 +1,48 @@
+---
+
+- name: add ansible ppa
+  apt_repository:
+    repo: ppa:ansible/ansible
+  become: yes
+
+- name: install git and ansible
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  become: yes
+  with_items:
+    - git
+    - ansible
+
+- name: create local dir to work from
+  file:
+    path: "{{ workdir }}"
+    state: directory
+    owner: "{{ my_remote_user }}"
+    group: "{{ my_remote_user }}"
+    mode: 0751
+  become: yes
+
+- name: create initial empty log file
+  file:
+    state: touch
+    path: "{{ logfile }}"
+    owner: "{{ my_remote_user }}"
+    group: "{{ my_remote_user }}"
+    mode: 0644
+  become: yes
+
+- name: Create crontab entry to ansible-pull
+  cron:
+    name: ansible-pull action
+    user: "{{ my_remote_user }}"
+    job: "ansible-pull --directory {{ workdir }} --url {{ repo_url }} --checkout {{ repo_branch }} --force --inventory-file ansible/hosts/ --limit ansible_pull playbooks/ansible-pull-action.yml >> {{ logfile }} 2>&1"
+
+- name: Create logrotate entry for ansible-pull.log
+  template:
+    src: etc_logrotate.d_ansible-pull.j2
+    dest: /etc/logrotate.d/ansible-pull
+    owner: "{{ my_remote_user }}"
+    group: "{{ my_remote_user }}"
+    mode: 0644
+  become: yes
