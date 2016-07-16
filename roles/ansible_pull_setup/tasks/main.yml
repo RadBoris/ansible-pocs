@@ -36,7 +36,7 @@
   cron:
     name: ansible-pull action
     user: "{{ my_remote_user }}"
-    job: "ansible-pull --directory {{ workdir }} --url {{ repo_url }} --checkout {{ repo_branch }} --inventory-file ./hosts/ --full playbooks/ansible-pull-action.yml >> {{ logfile }} 2>&1"
+    job: "ansible-pull --directory {{ workdir }} --url {{ repo_url }} --checkout {{ repo_branch }} --full playbooks/ansible-pull-action.yml >> {{ logfile }} 2>&1"
 
 - name: Create logrotate entry for ansible-pull.log
   template:
