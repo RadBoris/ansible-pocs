@@ -54,12 +54,12 @@ The tricky part is choosing the correct options for the `ansible-pull` command. 
 
 The important flags here are:
 * `--full` - checks out the full repo. This seems to only be necessary if checking out a branch other than master.
-* `-i '127.0.0.1,'` - the inventory to use. This can either be a directory, file, or a comma-separated list of hostnames. Ideally we would not supply this flag at all, and instead default to the inventory specified in ansible.cfg. Unfortunately, doing so results in an error about a missing file, due to a symlink with a missing destination (see hosts/README.md for more info on why we have symlink here). Thus, we opt for the simplest option of specifying the host directly. Cron jobs usually take care of some maintenance on the host they run on, so the host we specify is 127.0.0.1. TODO: possible to add an empty value here, and allow the playbook `hosts:` to define this?
+* `-i '127.0.0.1,'` - the inventory to use. This can either be a directory, file, or a comma-separated list of hostnames. Ideally we would not supply this flag at all, and instead default to the inventory specified in ansible.cfg. Unfortunately, doing so results in an error about a missing file, due to a symlink with a missing destination (see hosts/README.md for more info on why we have symlink here). Thus, we opt for the simplest option of specifying the host directly. Cron jobs usually take care of some maintenance on the host they run on, so the host we specify is '127.0.0.1,'. We could still delegate some jobs to other hosts with `delegate_to` if we wanted to. The comma is important here, as otherwise ansible-pull looks for a file of this name, rather than treating it as a list of hostnames.
 * --force - forces the playbook to run even if the repo couldn't be pulled this time (using the last sucessfully pulled version).
 
 #### Step 2: write the job
 
-The second part is to define the job itself as an ansible playbook. Remember that this playbook will be running on the remote host itself, and thus you will want to set `hosts: 127.0.0.1`. In all other respects, writing the tasks is exactly the same as when running ansible from the control machine. TODO: finish this part - possiby don't need to set `hosts:` in playbook?
+The second part is to define the job itself as an ansible playbook. Remember that this playbook will be running from the remote host itself, and thus any tasks that should operate on the host itself should not use the external IP, but the internal IP. Hence, we set `hosts: 127.0.0.1`. In all other respects, writing the tasks is exactly the same as when running ansible from the control machine.
 
 ## TODO
 
