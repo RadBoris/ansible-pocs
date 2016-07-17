@@ -1,0 +1,12 @@
+---
+
+- name: set up simple ansible pull cron job
+  hosts: primary
+  remote_user: "{{ my_remote_user }}"
+  become: no
+  become_method: sudo
+  become_user: root
+
+  roles:
+    - { role: admin_user, when: "'development' not in group_names" }
+    - ansible_pull_setup
