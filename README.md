@@ -59,7 +59,7 @@ The important flags here are:
 
 #### Step 2: write the job
 
-The second part is to define the job itself as an ansible playbook. Remember that this playbook will be running from the remote host itself, and thus any tasks that should operate on the host itself should not use the external IP, but the internal IP. Hence, we set `hosts: 127.0.0.1`. In all other respects, writing the tasks is exactly the same as when running ansible from the control machine.
+The second part is to define the job itself as an ansible playbook. Remember that this playbook will be running from the remote host itself, and thus any tasks that should operate on the host itself should not use the external IP, but the internal IP. Hence, we set `hosts: 127.0.0.1`. In all other respects, writing the tasks is exactly the same as when running ansible from the control machine. This is demonstrated in playbooks/ansible-pull-action.yml.
 
 ## TODO
 
