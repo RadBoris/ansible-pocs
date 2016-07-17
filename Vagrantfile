@@ -61,25 +61,16 @@ Vagrant.configure(2) do |config|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
   # end
 
-  config.vm.define "primary" do |primary|
+  config.vm.define "primary"
+  config.vm.define "secondary"
 
-    primary.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/vagrant.yml"
-    end
+  config.vm.provision "ansible" do |ansible|
 
-  end
-
-  config.vm.define "secondary" do |secondary|
-
-    secondary.vm.provision "ansible" do |ansible|
-      ansible.playbook = "playbooks/vagrant.yml"
-      # ansible.groups must be defined in the last vm, as it will overwrite
-      # the settings listed in all previous vms.
-      ansible.groups = {
-        'development' => ['primary', 'secondary']
-      }
-    end
-
+    ansible.playbook = "playbooks/vagrant.yml"
+    ansible.groups = {
+      "development" => ['primary', 'secondary']
+    }
+    
   end
 
 end

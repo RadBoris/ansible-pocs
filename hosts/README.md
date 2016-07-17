@@ -18,17 +18,19 @@ ansible.groups = {
 
 We can then reference the 'development' group in our playbooks.
 
+For this reason, we have defined '\_development\_vars' as a separate file - although we could possibly add these vars via the vagrant config too. (TODO!)
+
 ## Why are some inventory file names prefixed with underscores?
 
 This is a workaround for a problem. The contents of the hosts directory are processed in alphabetical order. This means that if you had inventory files 'a' and 'b', and in 'a' you tried to reference a group name that is defined in 'b', you would get an error like: `"Section [mysection:children] includes undefined group: mygroup"`
 
 To work around this, we make sure all groups are defined first (hence adding the underscore to make them first alphabetically).
 
-## What is the insecure_ssh inventory file?
+There is currently no need for this workaround in this project, as some extra host groups have been removed since development began - however, this workaround is left in place as a reminder.
 
-(The insecure_ssh file is based on a solution found here: http://stackoverflow.com/a/35564773/3293805)
+## What is '-o StrictHostKeyChecking=no' for?
 
-This file adds a nested inventory group that allows us to disable strict host key checking for a group of servers. Strict host key checking is how SSH determines whether the machine you're connecting to is the machine you really think it is, by checking its 'fingerprint'.
+This setting allows us to disable strict host key checking for a group of servers. Strict host key checking is how SSH determines whether the machine you're connecting to is the machine you really think it is, by checking its 'fingerprint'.
 
 But why would we want to disable this?
 
@@ -38,11 +40,11 @@ Disabling string host key checking is particularly useful for the development gr
 
 In fact, nothing nasty is happening, we've just rebuilt our machine. By disabling strict host key checking, we allow ansible to continue to connect to the machine.
 
-Disabling string host key checking can also be useful if you test your playbooks against a remote host, and you occasionally rebuild that host (e.g. on AWS or Digital Ocean). ~~For this reason, this project also disables strict host key checking for the 'staging' group.~~ (no longer - see notes below)
+Disabling string host key checking can also be useful if you test your playbooks against a remote host, and you occasionally rebuild that host (e.g. on AWS or Digital Ocean). However, this should not be done on production, or indeed any server you plan to deploy sensitive information to (which might include staging). Use at your own risk.
 
-To disable strict host key checking for a group, add the group name under `[insecure_ssh:children]` in the 'insecure_ssh' file. This should not be done on production, or indeed any server you plan to deploy sensitive information to (which might include staging). Use at your own risk.
+To disable strict host key checking for a group, add `ansible_ssh_extra_args='-o StrictHostKeyChecking=no'` to the group's vars (see hosts/\_development\_vars for an example.
 
-Note:
-* Running `vagrant provision` after rebuilding your vagrant machine does not throw up the above warning, so disabling strict host key checking is only necessary if you're trying to run ansible directly, e.g. via `ansible-playbook`. Likewise, `vagrant ssh` does not throw up the warning.
-* Disabling strict host key checking in ansible does not have an effect when SSH'ing into the machine using the ssh command - you will see the above warning. A workaround in this case is to remove the old 'fingerprint' from your ~/.ssh/known_hosts file. Look for the IP address of the machine, and remove that line from the file.
-* There is a limitation to using group vars in inventory files, e.g. `[insecure_ssh:vars]` - if you set a variable on this group, and you've set the same variable on another group, and a particular host is a member of both groups - the variable will be overwritten. As such, staging has been removed from the insecure_ssh group, so that the variable can be set with a different value via another group.
+### Notes
+* Running `vagrant provision` after rebuilding your vagrant machine does not throw up the identity warning, so disabling strict host key checking is only necessary if you're trying to run ansible directly, e.g. via `ansible-playbook`. Likewise, `vagrant ssh` does not throw up the warning.
+* Disabling strict host key checking in ansible does not have an effect when SSH'ing into the machine using the ssh command - you will see the above warning. A workaround in this case is to remove the old 'fingerprint' from your ~/.ssh/known_hosts file. Look for the IP address of the machine, and remove that line from the file. This can also be achieved with `ssh-keygen -R <ip address>`.
+* There is a limitation to using group vars in inventory files, e.g. `[development:vars]` - if you set a variable on this group, and you've set the same variable on another group, and a particular host is a member of both groups - the variable will be overwritten by the most recent setting.
