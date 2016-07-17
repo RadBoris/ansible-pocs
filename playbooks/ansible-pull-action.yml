@@ -1,7 +1,7 @@
 ---
 
 - name: run simple action (to be run by ansible pull on remote host)
-  # hosts: 127.0.0.1
+  hosts: 127.0.0.1
   remote_user: "{{ my_remote_user }}"
   become: no
   become_method: sudo
