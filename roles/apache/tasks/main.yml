@@ -17,6 +17,7 @@
     protocol: tcp
     jump: ACCEPT
 
+# TODO: this only prints the current config, it does not save it.
 - name: run iptables-save
   become: yes
   command: iptables-save
