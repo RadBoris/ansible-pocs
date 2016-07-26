@@ -59,21 +59,23 @@ Vagrant.configure(2) do |config|
     fail_with_message "vagrant-hostmanager missing, please install the plugin with this command:\nvagrant plugin install vagrant-hostmanager"
   end
 
-  config.vm.define "primary" do |primary|
-    primary.vm.network :private_network, ip: '192.168.1.1'
-    primary.hostmanager.aliases = ['primary.local', 'primary.dev']
+  config.vm.define "alpha" do |alpha|
+    alpha.vm.network :private_network, ip: '192.168.1.1'
+    alpha.hostmanager.aliases = ['alpha.local', 'alpha.dev']
   end
 
-  config.vm.define "secondary" do |secondary|
-    secondary.vm.network :private_network, ip: '192.168.1.2'
-    secondary.hostmanager.aliases = ['secondary.local', 'secondary.dev']
+  config.vm.define "beta" do |beta|
+    beta.vm.network :private_network, ip: '192.168.1.2'
+    beta.hostmanager.aliases = ['beta.local', 'beta.dev']
   end
 
   config.vm.provision "ansible" do |ansible|
 
     ansible.playbook = "playbooks/vagrant.yml"
     ansible.groups = {
-      "development" => ['primary', 'secondary']
+      "development" => ['alpha', 'beta'],
+      "primary" => ['alpha'],
+      "secondary" => ['beta']
     }
     
   end
