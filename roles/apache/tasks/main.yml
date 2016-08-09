@@ -7,17 +7,3 @@
     update_cache: yes
   with_items:
     - apache2
-    - iptables-persistent
-
-- name: configure iptables
-  become: yes
-  iptables:
-    chain: INPUT
-    destination_port: 80
-    protocol: tcp
-    jump: ACCEPT
-
-# TODO: this only prints the current config, it does not save it.
-- name: run iptables-save
-  become: yes
-  command: iptables-save

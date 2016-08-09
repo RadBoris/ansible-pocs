@@ -60,12 +60,13 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define "alpha" do |alpha|
-    alpha.vm.network :private_network, ip: '192.168.1.1'
+    # don't use an ip that ends in '.1' - apache won't serve the default site through this ip.
+    alpha.vm.network :private_network, ip: '192.168.1.2'
     alpha.hostmanager.aliases = ['alpha.local', 'alpha.dev']
   end
 
   config.vm.define "beta" do |beta|
-    beta.vm.network :private_network, ip: '192.168.1.2'
+    beta.vm.network :private_network, ip: '192.168.1.3'
     beta.hostmanager.aliases = ['beta.local', 'beta.dev']
   end
 
