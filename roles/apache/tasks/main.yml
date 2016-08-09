@@ -1,0 +1,9 @@
+---
+
+- name: install packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - apache2

@@ -1,0 +1,12 @@
+---
+
+- hosts: primary:!development
+  remote_user: root
+  roles:
+    - admin_user
+
+- hosts: primary
+  remote_user: "{{ my_remote_user }}"
+
+  roles:
+    - apache
