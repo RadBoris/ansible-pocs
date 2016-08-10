@@ -1,0 +1,17 @@
+---
+
+- name: set explicit ServerName for default website
+  become: yes
+  lineinfile:
+    dest: /etc/apache2/sites-available/000-default.conf
+    regexp: ServerName
+    line: ServerName {{ apache_servername }}
+
+- name: get certbot
+  command: "{{ item }}"
+  with_items:
+    - wget https://dl.eff.org/certbot-auto
+    - chmod a+x certbot-auto
+
+- name: install certificate
+  command: ./certbot-auto --non-interactive --agree-tos --email {{ cert.email_address }} --apache --domains {{ apache_servername }}

@@ -1,0 +1,5 @@
+---
+
+# apache_servername: your.apache.ServerName.com
+# cert:
+#   email_address: you@domain.com

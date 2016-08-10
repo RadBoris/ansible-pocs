@@ -1,0 +1,16 @@
+---
+
+- hosts: primary:!development
+  remote_user: root
+  roles:
+    - admin_user
+
+- hosts: primary
+  remote_user: "{{ my_remote_user }}"
+  roles:
+    - apache
+
+- hosts: primary:!development # letsencrypt won't work on a non-public server
+  remote_user: "{{ my_remote_user }}"
+  roles:
+    - letsencrypt
