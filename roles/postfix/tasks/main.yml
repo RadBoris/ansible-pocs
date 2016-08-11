@@ -1,0 +1,7 @@
+---
+
+- name: install packages
+  become: yes
+  apt:
+    name: postfix
+    update_cache: yes

@@ -8,6 +8,7 @@
 - hosts: primary
   remote_user: "{{ my_remote_user }}"
   roles:
+    - postfix
     - apache
 
 - hosts: primary:!development # letsencrypt won't work on a non-public server
