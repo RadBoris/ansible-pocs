@@ -8,13 +8,14 @@
     line: ServerName {{ apache_servername }}
 
 - name: get certbot
-  command: "{{ item }}"
-  with_items:
-    - wget https://dl.eff.org/certbot-auto
-    - chmod a+x certbot-auto
+  become: yes
+  get_url:
+    url: https://dl.eff.org/certbot-auto
+    dest: /usr/sbin
+    mode: a+x
 
 - name: install certificate
-  command: ./certbot-auto --non-interactive {{ cert.additional_flags }} --agree-tos --email {{ cert.email_address }} --apache --domains {{ apache_servername }}
+  command: certbot-auto --non-interactive {{ cert.additional_flags }} --agree-tos --email {{ cert.email_address }} --apache --domains {{ apache_servername }}
 
 - name: set up cron sleep test job
   cron:
@@ -31,4 +32,4 @@
     name: ssl certificate renewal
     user: "{{ my_remote_user }}"
     # sleep for a random number of minutes before renewing cert
-    job: sleep $(shuf -i 0-59 -n 1)m; ~/certbot-auto renew {{ cert.additional_flags }} --no-self-upgrade --quiet
+    job: sleep $(shuf -i 0-59 -n 1)m; certbot-auto renew {{ cert.additional_flags }} --no-self-upgrade --quiet
