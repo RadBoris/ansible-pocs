@@ -14,7 +14,7 @@
     - chmod a+x certbot-auto
 
 - name: install certificate
-  command: ./certbot-auto --non-interactive --agree-tos --email {{ cert.email_address }} --apache --domains {{ apache_servername }}
+  command: ./certbot-auto --non-interactive {{ cert.additional_flags }} --agree-tos --email {{ cert.email_address }} --apache --domains {{ apache_servername }}
 
 - name: set up cert renewal cron job
   cron:

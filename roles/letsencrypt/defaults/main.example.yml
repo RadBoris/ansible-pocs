@@ -3,3 +3,4 @@
 # apache_servername: your.apache.ServerName.com
 # cert:
 #   email_address: you@domain.com
+#   additional_flags: "--test-cert --break-my-certs"
