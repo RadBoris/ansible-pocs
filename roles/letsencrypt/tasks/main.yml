@@ -16,15 +16,19 @@
 - name: install certificate
   command: ./certbot-auto --non-interactive {{ cert.additional_flags }} --agree-tos --email {{ cert.email_address }} --apache --domains {{ apache_servername }}
 
-- name: set up cert renewal cron job
-  cron:
-    name: ssl certificate renewal
-    user: "{{ my_remote_user }}"
-    job: sleep $(shuf -i 0-59 -n 1)s; ~/certbot-auto renew --no-self-upgrade --dry-run
-    disabled: yes
-
 - name: set up cron sleep test job
   cron:
     name: cron sleep test job
     user: "{{ my_remote_user }}"
+    # sleep for a random number of seconds before echoing date and time
     job: sleep $(shuf -i 0-59 -n 1)s; date;
+    disabled: yes
+
+- name: set up cert renewal cron job
+  cron:
+    hour: 0,12 # midnight and midday
+    minute: 0 # run on minute zero
+    name: ssl certificate renewal
+    user: "{{ my_remote_user }}"
+    # sleep for a random number of minutes before renewing cert
+    job: sleep $(shuf -i 0-59 -n 1)m; ~/certbot-auto renew {{ cert.additional_flags }} --no-self-upgrade --quiet
