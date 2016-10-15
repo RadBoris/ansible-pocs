@@ -1,0 +1,26 @@
+---
+
+- name: add admin user to non-development primary hosts
+  hosts: primary:!development
+  remote_user: root
+  roles:
+    - admin_user
+
+- name: run various git tasks
+  hosts: primary
+  remote_user: "{{ my_remote_user }}"
+
+  tasks:
+
+  - name: install packages
+    become: yes
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+    with_items:
+      - git
+
+  - name: clone public git repo
+    git:
+      repo: https://github.com/octocat/Spoon-Knife.git
+      dest: ~/Spoon-Knife/
