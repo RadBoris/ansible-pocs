@@ -6,9 +6,16 @@
   roles:
     - admin_user
 
+- name: add admin user to development primary hosts
+  hosts: primary:&development
+  remote_user: vagrant
+  become: yes
+  roles:
+    - admin_user
+
 - name: run various git tasks
-  hosts: primary
-  remote_user: "{{ my_remote_user }}"
+  hosts: primary:&staging #, dev_as_remote
+  remote_user: admin
 
   tasks:
 
@@ -24,3 +31,15 @@
     git:
       repo: https://github.com/octocat/Spoon-Knife.git
       dest: ~/Spoon-Knife/
+
+  - name: clone public git repo over ssh
+    git:
+      repo: git@github.com:octocat/Spoon-Knife.git
+      dest: ~/Spoon-Knife-ssh/
+      accept_hostkey: yes
+
+  - name: clone private git repo
+    git:
+      repo: "{{ my_private_git_repo }}"
+      dest: ~/private-repo/
+      accept_hostkey: yes

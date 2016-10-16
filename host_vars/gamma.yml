@@ -1,0 +1,4 @@
+---
+
+my_remote_user: admin
+admin_user_role_remote_user: vagrant
