@@ -1,8 +1,5 @@
 ---
 
-- debug:
-    var: admin_user
-
 - name: get current username
   command: id -u -n
   register: user_name
