@@ -16,6 +16,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.box = "ubuntu/trusty64"
+  config.vm.box_version = "20170202.1.0"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,

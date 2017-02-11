@@ -8,6 +8,13 @@ Keeping these examples in a simple, isolated project lets me refer to known work
 
 New versions of Ansible are released regularly. The playbooks in this project are always tested against a specific version, which is specified in requirements.txt (e.g. `ansible==2.2.1.0`).
 
+## Server OS version
+
+These playbooks are tested against:
+
+* Vagrant boxes running a specific box version as specified in 'Vagrantfile', e.g. `config.vm.box_version = "v20170202.1.0"`
+* Digital Ocean machines running Ubuntu 14.04.5 x64
+
 ## Inventory
 
 See hosts/README.md for notes specific to inventory files.
