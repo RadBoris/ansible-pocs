@@ -4,6 +4,10 @@ An ansible project that solves and documents some of the issues I've faced while
 
 Keeping these examples in a simple, isolated project lets me refer to known working examples, in case I ever have issues while working in more complex projects.
 
+## Ansible version
+
+New versions of Ansible are released regularly. The playbooks in this project are always tested against a specific version, which is specified in requirements.txt (e.g. `ansible==2.2.1.0`).
+
 ## Inventory
 
 See hosts/README.md for notes specific to inventory files.
