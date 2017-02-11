@@ -1,0 +1,15 @@
+---
+
+- name: create an admin user (i.e. a non-root sudoer)
+  hosts: all:!development # development machines on vagrant already have a sudoer
+  remote_user: root # Digital Ocean machines are provided with a root user by default, so we use this user to create our admin user.
+
+  roles:
+    - create_admin_user
+
+- name: test the admin user
+  hosts: all
+  remote_user: "{{ admin_user.name }}"
+
+  roles:
+    - test_admin_user

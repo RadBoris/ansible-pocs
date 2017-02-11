@@ -1,28 +1,24 @@
 ---
 
 - name: create admin group
-  remote_user: "{{ admin_user_role_remote_user }}"
   group:
-    name: admin
+    name: "{{ admin_user.group }}"
 
 - name: Allow admin group to have passwordless sudo
-  remote_user: "{{ admin_user_role_remote_user }}"
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^%admin'
-    line: '%admin ALL=(ALL) NOPASSWD: ALL'
+    regexp: '^%{{ admin_user.group }}'
+    line: '%{{ admin_user.group }} ALL=(ALL) NOPASSWD: ALL'
 
 - name: create admin user in admin group
-  remote_user: "{{ admin_user_role_remote_user }}"
   user:
-    name: admin
-    groups: admin
+    name: "{{ admin_user.name }}"
+    groups: "{{ admin_user.group }}"
     append: yes
     shell: /bin/bash
 
 - name: add ssh public key for admin user
-  remote_user: "{{ admin_user_role_remote_user }}"
   authorized_key:
-    user: admin
+    user: "{{ admin_user.name }}"
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

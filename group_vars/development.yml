@@ -1,5 +1,4 @@
 ---
 
-# this actually gets overriden by ansible_ssh_user in the inventory,
-# but should be defined here regardless, to avoid an undefined variable error
-my_remote_user: vagrant
+admin_user:
+  name: "{{ ansible_ssh_user }}"
