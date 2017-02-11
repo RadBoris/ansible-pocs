@@ -1,7 +1,7 @@
 ---
 - name: rsync with remote machines
   hosts: ansible-pocs-1
-  remote_user: "{{ my_remote_user }}"
+  remote_user: admin
   become: no
   become_method: sudo
   become_user: root
