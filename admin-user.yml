@@ -5,11 +5,11 @@
   remote_user: root # Digital Ocean machines are provided with a root user by default, so we use this user to create our admin user.
 
   roles:
-    - admin_user
+    - create_admin_user
 
 - name: test the admin user
   hosts: all
   remote_user: "{{ admin_user.name }}"
 
   roles:
-    - remote_user_test
+    - test_admin_user
