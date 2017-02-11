@@ -8,7 +8,7 @@
     - admin_user
 
 - name: test the admin user
-  hosts: staging
+  hosts: all
   remote_user: "{{ admin_user.name }}"
 
   roles:
