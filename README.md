@@ -19,6 +19,10 @@ These playbooks are tested against:
 
 See hosts/README.md for notes specific to inventory files.
 
+## Gotchas
+
+There is a problem with accessing variables from group_vars when your playbooks are in a subfolder. For this reason, we will move working playbooks back into the root directory until a solution is found.
+
 ## Playbooks
 
 ### vagrant.yml
