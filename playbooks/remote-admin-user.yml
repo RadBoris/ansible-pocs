@@ -1,8 +1,0 @@
----
-- hosts: all
-  gather_facts: no
-  remote_user: admin
-
-  roles:
-    - { role: admin_user, when: "'development' not in group_names" }
-    - { role: remote_user_test, tags: ['remote_user_test'] }
