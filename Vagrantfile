@@ -16,25 +16,12 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.box = "ubuntu/trusty64"
-
-  # Disable automatic box update checking. If you disable this, then
-  # boxes will only be checked for updates when the user runs
-  # `vagrant box outdated`. This is not recommended.
-  # config.vm.box_check_update = false
+  config.vm.box_version = "20170202.1.0"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # config.vm.network "forwarded_port", guest: 80, host: 8080
-
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
 
   # disables the default synced folder - not used in this project
   config.vm.synced_folder ".", "/vagrant", disabled: true
@@ -61,14 +48,39 @@ Vagrant.configure(2) do |config|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
   # end
 
-  config.vm.define "primary"
-  config.vm.define "secondary"
+  def fail_with_message(msg)
+    fail Vagrant::Errors::VagrantError.new, msg
+  end
+
+  if Vagrant.has_plugin? 'vagrant-hostmanager'
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = false
+  else
+    fail_with_message "vagrant-hostmanager missing, please install the plugin with this command:\nvagrant plugin install vagrant-hostmanager"
+  end
+
+  config.vm.define "alpha" do |alpha|
+    # don't use an ip that ends in '.1' - apache won't serve the default site through this ip.
+    alpha.vm.network :private_network, ip: '192.168.2.2'
+    alpha.hostmanager.aliases = ['alpha.local', 'alpha.dev']
+  end
+
+  config.vm.define "beta" do |beta|
+    beta.vm.network :private_network, ip: '192.168.2.3'
+    beta.hostmanager.aliases = ['beta.local', 'beta.dev']
+  end
 
   config.vm.provision "ansible" do |ansible|
 
     ansible.playbook = "playbooks/vagrant.yml"
     ansible.groups = {
-      "development" => ['primary', 'secondary']
+      "development" => ['alpha', 'beta'],
+      "primary" => ['alpha'],
+      "secondary" => ['beta'],
+      "development:vars" => {
+        "ansible_ssh_extra_args" => "'-o StrictHostKeyChecking=no -o ForwardAgent=yes'"
+      }
     }
     
   end

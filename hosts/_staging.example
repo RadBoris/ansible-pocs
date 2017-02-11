@@ -8,6 +8,12 @@
 # ansible-pocs-1
 # ansible-pocs-2
 
+# [primary]
+# ansible-pocs-1
+
+# [secondary]
+# ansible-pocs-2
+
 ## ForwardAgent is necessary when running a task that connects
 ## a remote host to another remote host/server, e.g. running
 ## rsync, or pulling from Github 

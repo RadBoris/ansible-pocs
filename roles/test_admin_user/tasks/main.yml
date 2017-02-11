@@ -12,6 +12,10 @@
   debug:
     msg: "user: {{ user_name.stdout }} --- home: {{ user_home.stdout }}"
 
-- name: test sudo pwd
+- name: test sudo on the pwd command
   become: yes
   command: pwd
+  register: sudo_result
+
+- debug:
+    var: sudo_result.stdout

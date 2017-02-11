@@ -4,9 +4,35 @@ An ansible project that solves and documents some of the issues I've faced while
 
 Keeping these examples in a simple, isolated project lets me refer to known working examples, in case I ever have issues while working in more complex projects.
 
+## To run the playbooks yourself
+
+Playbooks are set to run against local (development) machines, remote (staging) machines, or both. Check the playbook `hosts` setting to see.
+
+To run the playbooks against remote machines, first create two $5 machines running Ubuntu 14.04.5 x64, and add their IPs to the hosts directory (see the example there).
+
+If you're running playbooks against local machines: 
+    - `vagrant up` to create the two local dev machines. Wait for this to complete.
+    - `cd hosts`
+    - `ln -s ../.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory _development` to create a symlink from the hosts directory to Vagrant's automatically generated inventory file.
+
+## Ansible version
+
+New versions of Ansible are released regularly. The playbooks in this project are always tested against a specific version, which is specified in requirements.txt (e.g. `ansible==2.2.1.0`).
+
+## Server OS version
+
+These playbooks are tested against:
+
+* Vagrant boxes running a specific box version as specified in 'Vagrantfile', e.g. `config.vm.box_version = "v20170202.1.0"`
+* Digital Ocean machines running Ubuntu 14.04.5 x64
+
 ## Inventory
 
 See hosts/README.md for notes specific to inventory files.
+
+## Gotchas
+
+There is a problem with accessing variables from group_vars when your playbooks are in a subfolder. For this reason, we will move working playbooks back into the root directory until a solution is found.
 
 ## Playbooks
 
@@ -14,17 +40,17 @@ See hosts/README.md for notes specific to inventory files.
 
 This is a near-empty playbook that vagrant runs by default on `vagrant up`. We don't really want a playbook to be run automatically (we want to choose from one of the below playbooks), however, using the vagrant ansible provisioner requires that you choose a playbook, so we just give it this dummy playbook to keep it happy. You may ask "then why use the ansible provisioner at all?" - because we want it to auto-generate an inventory file for us.
 
-### remote-admin-user.yml
+### admin-user.yml
 
-A playbook to add an 'admin' user to your remote machine, so you don't have to use root.
+A playbook to add an 'admin' user to your remote machine (so you don't have to use root), and then test that user.
 
 Most vagrant boxes come with a default 'vagrant' user with passwordless sudo. On the other hand, most remote VPS's come with root access only. It's better to run things as a standard user, and only elevate to root when necessary.
 
-In this playbook, the very first role is to add the admin user - this is done while logging in as root (set as `remote_user` at task level in the admin_user role, to override the playbook level setting described below). This only needs to be done on remote machines though, so the 'development group' is excluded from this role.
+In this playbook, the first play is to add the admin user - this is done while logging in as root (set as `remote_user` at task level in the admin_user role, to override the playbook level setting described below). This only needs to be done on remote machines though, so the 'development group' is excluded from this role.
 
-Any roles or tasks beyond this should use the standard user. This is set at playbook level as `remote_user`. This in turn is set via a group_var called `my_remote_user` - because the user will be different depending on the environment ('vagrant' on the development box, 'admin' elsewhere).
+Any plays, roles, or tasks beyond this should use your new admin user. The name of this user is set at group_var level - because the user will be different depending on the environment ('vagrant' on the development box, 'admin' elsewhere).
 
-### rsync.yml
+### rsync-remote.yml
 
 A playbook to sync a folder on one remote host, to a folder on another remote host.
 
@@ -33,6 +59,8 @@ Note: Add your own remote hosts to the inventory first (see hosts/_staging.examp
 Currently tested on two remote hosts (not vagrant).
 
 View the comments in the playbook for more info.
+
+## Work in progress
 
 ### ansible-pull-setup.yml
 
