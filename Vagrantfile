@@ -77,7 +77,10 @@ Vagrant.configure(2) do |config|
     ansible.groups = {
       "development" => ['alpha', 'beta'],
       "primary" => ['alpha'],
-      "secondary" => ['beta']
+      "secondary" => ['beta'],
+      "development:vars" => {
+        "ansible_ssh_extra_args" => "'-o StrictHostKeyChecking=no -o ForwardAgent=yes'"
+      }
     }
     
   end
