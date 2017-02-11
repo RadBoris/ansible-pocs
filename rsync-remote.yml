@@ -1,0 +1,52 @@
+---
+
+- name: create an admin user (i.e. a non-root sudoer)
+  hosts: all:!development
+  remote_user: root
+
+  roles:
+    - create_admin_user
+
+- name: rsync between remote machines
+  hosts: ansible-pocs-1
+  remote_user: "{{ admin_user.name }}"
+  become: no
+  become_method: sudo
+  become_user: root
+
+  tasks:
+
+    - name: create folder on src to sync
+      file:
+        state: directory
+        path: ~/syncthis
+      delegate_to: ansible-pocs-2
+
+    - name: create file on src to sync
+      file:
+        state: touch
+        path: ~/syncthis/{{ ansible_date_time.epoch }}
+      delegate_to: ansible-pocs-2
+
+    ## This playbook is run against host ansible-pocs-1, but this task is
+    ## delegated to ansible-pocs-2. In practice this means that the task
+    ## first logs into ansible-pocs-2 and then runs rsync from there back
+    ## to ansible-pocs-1.
+    - name: sync remote folder to remote folder
+      synchronize:
+        src: /home/admin/syncthis
+        dest: /home/admin
+        # archive: yes ## default is yes
+        # recursive: yes ## default is value of 'archive'
+        ## hence, it is not necessary to explicitly set recursive: yes
+        # mode: push ## default is push
+      delegate_to: ansible-pocs-2
+
+    - name: check file was synced
+      stat:
+        path: ~/syncthis/{{ ansible_date_time.epoch }}
+      register: stat_result
+
+    - fail:
+        msg: 'file was not synced'
+      when: stat_result.stat.exists == False

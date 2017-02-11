@@ -35,7 +35,7 @@ In this playbook, the first play is to add the admin user - this is done while l
 
 Any plays, roles, or tasks beyond this should use your new admin user. The name of this user is set at group_var level - because the user will be different depending on the environment ('vagrant' on the development box, 'admin' elsewhere).
 
-### rsync.yml
+### rsync-remote.yml
 
 A playbook to sync a folder on one remote host, to a folder on another remote host.
 
@@ -44,6 +44,8 @@ Note: Add your own remote hosts to the inventory first (see hosts/_staging.examp
 Currently tested on two remote hosts (not vagrant).
 
 View the comments in the playbook for more info.
+
+## Work in progress
 
 ### ansible-pull-setup.yml
 
