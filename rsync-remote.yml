@@ -16,40 +16,55 @@
 
   tasks:
 
+    - debug:
+        var: ansible_date_time.iso8601_basic_short
+
     - name: create folder on src to sync
       file:
         state: directory
-        path: ~/syncthis
+        path: ~/syncthis-pocs2
       delegate_to: ansible-pocs-2
+
+    - name: create destination folder
+      file:
+        state: directory
+        path: ~/syncthis-pocs1
 
     - name: create file on src to sync
       file:
         state: touch
-        path: ~/syncthis/{{ ansible_date_time.epoch }}
+        path: ~/syncthis-pocs2/{{ ansible_date_time.iso8601_basic_short }}
       delegate_to: ansible-pocs-2
 
     ## This playbook is run against host ansible-pocs-1, but this task is
     ## delegated to ansible-pocs-2. In practice this means that the task
-    ## first logs into ansible-pocs-2 and then runs rsync in PUSH mode
+    ## first ssh's into ansible-pocs-2 and then runs rsync in PUSH mode
     ## using ansible-pocs-1 as the destination.
     - name: sync remote folder to remote folder
       synchronize:
-        src: /home/admin/syncthis
-        dest: /home/admin
+        src: /home/admin/syncthis-pocs2/ # trailing slash means "copy contents but not the dir"
+        dest: /home/admin/syncthis-pocs1/
         # archive: yes ## default is yes
         # recursive: yes ## default is value of 'archive'
         ## hence, it is not necessary to explicitly set recursive: yes
         # mode: push ## default is push
+        delete: yes # delete files at dest that don't exist at src
       delegate_to: ansible-pocs-2
 
     - name: check file was synced
       stat:
-        path: ~/syncthis/{{ ansible_date_time.epoch }}
+        path: ~/syncthis-pocs1/{{ ansible_date_time.iso8601_basic_short }}
       register: stat_result
 
     - fail:
         msg: 'file was not synced'
       when: stat_result.stat.exists == False
+
+    - name: create file on src to sync (with var as delegate)
+      file:
+        state: touch
+        path: ~/syncthis-pocs2/{{ ansible_date_time.iso8601_basic_short }}-var-as-delegate
+      delegate_to: ansible-pocs-2
 
     ## This task does the same as the earlier sync task, except we are
     ## supplying the delegate host as a variable - in this case, the
@@ -57,9 +72,19 @@
     ## Left here as a reminder of this technique.
     - name: sync remote folders using var as delegate
       synchronize:
-        src: /home/admin/syncthis
-        dest: /home/admin
-      delegate_to: "{{ groups['staging'][1] }}"  
+        src: /home/admin/syncthis-pocs2/
+        dest: /home/admin/syncthis-pocs1/
+        delete: yes
+      delegate_to: "{{ groups['staging'][1] }}"
+
+    - name: check file was synced
+      stat:
+        path: ~/syncthis-pocs1/{{ ansible_date_time.iso8601_basic_short }}-var-as-delegate
+      register: stat_result_2
+
+    - fail:
+        msg: 'file was not synced'
+      when: stat_result_2.stat.exists == False
 
 - name: rsync between remote machines (PULL style)
   hosts: ansible-pocs-2
@@ -70,30 +95,40 @@
 
   tasks:
 
+    - debug:
+        var: ansible_date_time.iso8601_basic_short
+
     - name: create folder on src to sync
       file:
         state: directory
-        path: ~/syncthis
+        path: ~/syncthis-pocs2
+
+    - name: create destination folder
+      file:
+        state: directory
+        path: ~/syncthis-pocs1
+      delegate_to: ansible-pocs-1
 
     - name: create file on src to sync
       file:
         state: touch
-        path: ~/syncthis/{{ ansible_date_time.epoch }}
+        path: ~/syncthis-pocs2/{{ ansible_date_time.iso8601_basic_short }}
 
     ## This playbook is run against host ansible-pocs-2, but this task is
     ## delegated to ansible-pocs-1. In practice this means that the task
-    ## first logs into ansible-pocs-1 and then runs rsync in PULL mode
+    ## first ssh's into ansible-pocs-1 and then runs rsync in PULL mode
     ## using ansible-pocs-2 as the source.
     - name: sync remote folder to remote folder
       synchronize:
-        src: /home/admin/syncthis
-        dest: /home/admin
+        src: /home/admin/syncthis-pocs2/
+        dest: /home/admin/syncthis-pocs1/
         mode: pull
+        delete: yes
       delegate_to: ansible-pocs-1
 
     - name: check file was synced
       stat:
-        path: ~/syncthis/{{ ansible_date_time.epoch }}
+        path: ~/syncthis-pocs1/{{ ansible_date_time.iso8601_basic_short }}
       register: stat_result
       delegate_to: ansible-pocs-1
 
