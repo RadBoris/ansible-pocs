@@ -1,0 +1,78 @@
+---
+
+- name: rsync push from vagrant to remote
+  hosts: ansible-pocs-1
+  remote_user: "{{ admin_user.name }}"
+
+  tasks:
+
+    - name: create folder on src to sync
+      file:
+        state: directory
+        path: ~/syncthis-alpha
+      delegate_to: alpha
+
+    - name: create destination folder
+      file:
+        state: directory
+        path: ~/syncthis-pocs1
+
+    - name: create file on src to sync
+      file:
+        state: touch
+        path: ~/syncthis-alpha/{{ ansible_date_time.iso8601_basic_short }}
+      delegate_to: alpha
+
+    ## This playbook is run against host ansible-pocs-1, but this task is
+    ## delegated to alpha. In practice this means that the task
+    ## first ssh's into alpha and then runs rsync in PUSH mode
+    ## using ansible-pocs-1 as the destination.
+    - name: sync vagrant folder to remote folder
+      synchronize:
+        src: /home/vagrant/syncthis-alpha/ # trailing slash means "copy contents but not the dir"
+        dest: /home/admin/syncthis-pocs1/
+        delete: yes # delete files at dest that don't exist at src
+      delegate_to: alpha
+    ## TODO: THIS TASK FAILS
+
+- name: rsync pull from remote to vagrant in one step
+  hosts: ansible-pocs-1 # in rsync pull mode, the host in context must be the source
+  remote_user: "{{ admin_user.name }}"
+
+  tasks:
+
+    - name: create folder on src to sync
+      file:
+        state: directory
+        path: ~/syncthis-pocs1
+
+    - name: create destination folder
+      file:
+        state: directory
+        path: ~/syncthis-alpha
+      delegate_to: alpha
+
+    - name: create file on src to sync
+      file:
+        state: touch
+        path: ~/syncthis-pocs1/{{ ansible_date_time.epoch }}
+
+    - name: test pwd on alpha
+      command: pwd
+      delegate_to: alpha
+      register: pwd_result
+
+    - debug:
+        var: pwd_result
+
+    ## This playbook is run against host ansible-pocs-1, but this task is
+    ## delegated to alpha. In practice this means that the task
+    ## first logs into alpha and then runs rsync in PULL mode
+    ## using ansible-pocs-1 as the source.
+    - name: sync from remote folder to vagrant folder
+      synchronize:
+        src: /home/admin/syncthis-pocs1/
+        dest: /home/vagrant/syncthis-alpha/
+        mode: pull
+      delegate_to: alpha
+    ## TODO: THIS TASK FAILS
