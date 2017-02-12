@@ -2,12 +2,17 @@
 
 - name: two step rsync - step 1
   hosts: ansible-pocs-1
-  remote_user: "{{ my_remote_user }}"
+  remote_user: "{{ admin_user.name }}"
   become: no
   become_method: sudo
   become_user: root
 
   tasks:
+
+    - name: create file on src to sync
+      file:
+        state: touch
+        path: ~/syncthis/{{ ansible_date_time.epoch }}
 
     - name: sync remote box to local dir
       synchronize:
@@ -17,9 +22,19 @@
         delete: yes # deletes files no longer present
       become: yes
 
+    - name: check file was synced
+      stat:
+        path: ./.rsync/syncthis/{{ ansible_date_time.epoch }}
+      register: stat_result
+      delegate_to: 127.0.0.1
+
+    - fail:
+        msg: 'file was not synced'
+      when: stat_result.stat.exists == False      
+
 - name: two step rsync - step 2
-  hosts: primary
-  remote_user: "{{ my_remote_user }}"
+  hosts: alpha
+  remote_user: "{{ admin_user.name }}"
   become: no
   become_method: sudo
   become_user: root
