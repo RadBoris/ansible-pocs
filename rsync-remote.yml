@@ -50,3 +50,13 @@
     - fail:
         msg: 'file was not synced'
       when: stat_result.stat.exists == False
+
+    ## This task does the same as the earlier sync task, except we are
+    ## supplying the delegate host as a variable - in this case, the
+    ## second machine listed in the staging group (index 1).
+    ## Left here as a reminder of this technique.
+    - name: sync remote folders using var as delegate
+      synchronize:
+        src: /home/admin/syncthis
+        dest: /home/admin
+      delegate_to: "{{ groups['staging'][1] }}"  

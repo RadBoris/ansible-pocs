@@ -4,6 +4,17 @@ An ansible project that solves and documents some of the issues I've faced while
 
 Keeping these examples in a simple, isolated project lets me refer to known working examples, in case I ever have issues while working in more complex projects.
 
+## To run the playbooks yourself
+
+Playbooks are set to run against local (development) machines, remote (staging) machines, or both. Check the playbook `hosts` setting to see.
+
+To run the playbooks against remote machines, first create two $5 machines running Ubuntu 14.04.5 x64, and add their IPs to the hosts directory (see the example there).
+
+If you're running playbooks against local machines: 
+    - `vagrant up` to create the two local dev machines. Wait for this to complete.
+    - `cd hosts`
+    - `ln -s ../.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory _development` to create a symlink from the hosts directory to Vagrant's automatically generated inventory file.
+
 ## Ansible version
 
 New versions of Ansible are released regularly. The playbooks in this project are always tested against a specific version, which is specified in requirements.txt (e.g. `ansible==2.2.1.0`).
@@ -18,6 +29,10 @@ These playbooks are tested against:
 ## Inventory
 
 See hosts/README.md for notes specific to inventory files.
+
+## Gotchas
+
+There is a problem with accessing variables from group_vars when your playbooks are in a subfolder. For this reason, we will move working playbooks back into the root directory until a solution is found.
 
 ## Playbooks
 
