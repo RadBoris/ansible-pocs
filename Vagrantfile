@@ -79,7 +79,7 @@ Vagrant.configure(2) do |config|
       "primary" => ['alpha'],
       "secondary" => ['beta'],
       "development:vars" => {
-        "ansible_ssh_extra_args" => "'-o StrictHostKeyChecking=no -o ForwardAgent=yes'"
+        "ansible_ssh_extra_args" => "'-o ForwardAgent=yes'"
       }
     }
     
