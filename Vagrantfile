@@ -66,10 +66,10 @@ Vagrant.configure(2) do |config|
     alpha.hostmanager.aliases = ['alpha.local', 'alpha.dev']
   end
 
-  config.vm.define "beta" do |beta|
-    beta.vm.network :private_network, ip: '192.168.2.3'
-    beta.hostmanager.aliases = ['beta.local', 'beta.dev']
-  end
+  # config.vm.define "beta" do |beta|
+  #   beta.vm.network :private_network, ip: '192.168.2.3'
+  #   beta.hostmanager.aliases = ['beta.local', 'beta.dev']
+  # end
 
   config.vm.provision "ansible" do |ansible|
 
@@ -77,7 +77,7 @@ Vagrant.configure(2) do |config|
     ansible.groups = {
       "development" => ['alpha', 'beta'],
       "primary" => ['alpha'],
-      "secondary" => ['beta'],
+      # "secondary" => ['beta'],
       "development:vars" => {
         "ansible_ssh_extra_args" => "'-o ForwardAgent=yes'"
       }
