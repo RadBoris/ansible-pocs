@@ -10,6 +10,11 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = ["~/.ssh/id_rsa", "~/.vagrant.d/insecure_private_key"]
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/host_id_rsa.pub"
+  config.vm.provision "shell", inline: "cat ~/host_id_rsa.pub >> ~/.ssh/authorized_keys", privileged: false # runs with sudo by default
+
   # disable vagrant-vbguest plugin
   if Vagrant.has_plugin?("vagrant-vbguest")
     config.vbguest.no_install = true
