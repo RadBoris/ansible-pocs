@@ -19,6 +19,14 @@ If you're running playbooks against local machines:
 
 New versions of Ansible are released regularly. The playbooks in this project are always tested against a specific version, which is specified in requirements.txt (e.g. `ansible==2.2.1.0`).
 
+## Virtualenv
+
+To be sure about which version of Ansible (and its dependencies) I'm running, I usually install it into a virtualenv and run it from there:
+
+* `virtualenv venv --python=python2.7`
+* `venv/bin/pip install -r requirements.txt`
+* `venv/bin/ansible-playbook my-playbook.yml`
+
 ## Server OS version
 
 These playbooks are tested against:
