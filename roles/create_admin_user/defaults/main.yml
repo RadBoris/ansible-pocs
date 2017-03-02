@@ -3,3 +3,6 @@
 admin_user:
   name: admin
   group: admin
+
+key_list:
+  - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

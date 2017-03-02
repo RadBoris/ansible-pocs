@@ -21,4 +21,5 @@
 - name: add ssh public key for admin user
   authorized_key:
     user: "{{ admin_user.name }}"
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    key: "{{ item }}"
+  with_items: "{{ ssh_public_keys }}"
