@@ -4,5 +4,5 @@ admin_user:
   name: admin
   group: admin
 
-key_list:
+ssh_public_keys:
   - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
