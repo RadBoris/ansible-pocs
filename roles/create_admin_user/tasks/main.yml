@@ -1,5 +1,11 @@
 ---
 
+- name: update ssh public keys for root user
+  authorized_key:
+    user: root
+    key: "{{ item }}"
+  with_items: "{{ ssh_public_keys }}"
+
 - name: create admin group
   group:
     name: "{{ admin_user.group }}"
