@@ -12,8 +12,14 @@ Vagrant.configure(2) do |config|
 
   config.ssh.insert_key = false
   config.ssh.private_key_path = ["~/.ssh/id_rsa", "~/.vagrant.d/insecure_private_key"]
-  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/host_id_rsa.pub"
-  config.vm.provision "shell", inline: "cat ~/host_id_rsa.pub >> ~/.ssh/authorized_keys", privileged: false # runs with sudo by default
+
+  # add host default public ssh key to guest authorized_keys file
+  config.vm.provision "file", 
+    source: "~/.ssh/id_rsa.pub", 
+    destination: "~/host_id_rsa.pub"
+  config.vm.provision "shell", 
+    inline: "cat ~/host_id_rsa.pub >> ~/.ssh/authorized_keys", 
+    privileged: false # runs with sudo by default
 
   # disable vagrant-vbguest plugin
   if Vagrant.has_plugin?("vagrant-vbguest")
