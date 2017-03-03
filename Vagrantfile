@@ -10,8 +10,12 @@ Vagrant.configure(2) do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  config.ssh.insert_key = false
-  config.ssh.private_key_path = ["~/.ssh/id_rsa", "~/.vagrant.d/insecure_private_key"]
+  # config.ssh.insert_key = false # don't insert secure key, use default insecure key
+  # config.ssh.private_key_path = [
+  #   # "~/.ssh/id_rsa", # the first key in the list is the one used by ansible
+  #   # "~/.vagrant.d/insecure_private_key", # vagrant will attempt to use subsequent keys on a `vagrant ssh`
+  #   # "./.vagrant/machines/alpha/virtualbox/private_key"
+  # ]
 
   # add host default public ssh key to guest authorized_keys file
   config.vm.provision "file", 
