@@ -1,5 +1,12 @@
 ---
 
+- name: create an admin user (i.e. a non-root sudoer)
+  hosts: all:!development
+  remote_user: root
+
+  roles:
+    - create_admin_user
+
 - name: rsync push from vagrant to remote
   hosts: ansible-pocs-1
   remote_user: "{{ admin_user.name }}"
